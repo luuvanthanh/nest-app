@@ -9,6 +9,7 @@ export class AuthService {
   
   async login(auth: AuthDto) {
     const user = await this.usersService.getUser(auth.email);
+    
     if (user?.email !== auth.email && user?.password === auth.password) {
       throw new BadRequestException('Something bad happened', {
         cause: new Error(),
@@ -17,11 +18,8 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, username: user.email };
-    const access_token = await this.jwtService.signAsync(payload);
-    console.log(access_token);
+    const token = await this.jwtService.signAsync(payload);
     
-    // to do genarate jwt 
-
-    return user
+    return token
   }
 }
