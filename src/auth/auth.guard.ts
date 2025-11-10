@@ -33,7 +33,8 @@ export class AuthGuard implements CanActivate {
       
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException();
+      const message = 'Get user failed';
+      throw new UnauthorizedException({message: message});
     }
     return true;
   }

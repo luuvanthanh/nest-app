@@ -12,26 +12,34 @@ export class UsersService {
   ) {}
   
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    return this.userRepository.save(createUserDto);
   }
 
-  findAll() {
-    return this.userRepository.find();
+  async findAll() {
+    return await this.userRepository.find({
+      order: {id: 'DESC'}
+    });
   }
 
-  getUser(email: string) {
-    return this.userRepository.findOneOrFail({
-      where: {
-        email
-      }
-    })
+  async getUserById(id: number) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) return null;
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) return null;
+    return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const result = await this.userRepository.save({ ...updateUserDto, id });
+    
+    return result;
+  }
+
+   remove(id: number) {
+    return this.userRepository.delete(id)
   }
 }
